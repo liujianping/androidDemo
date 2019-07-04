@@ -1,6 +1,10 @@
 package com.gitdig.androiddemo;
 
 import android.os.Bundle;
+
+import com.gitdig.helloworld.GreeterGrpc;
+import com.gitdig.helloworld.HelloReply;
+import com.gitdig.helloworld.HelloRequest;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -14,8 +18,16 @@ import android.view.MenuItem;
 
 import java.util.logging.Logger;
 
-public class MainActivity extends AppCompatActivity {
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.grpc.stub.StreamObserver;
 
+public class MainActivity extends AppCompatActivity {
+    public static ManagedChannel newChannel(String host, int port) {
+        return ManagedChannelBuilder.forAddress(host, port)
+                .usePlaintext()
+                .build();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        final GreeterGrpc.GreeterStub greeterStub = GreeterGrpc.newStub(newChannel("192.168.0.134", 50051));
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -32,6 +45,23 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
                 Log.i("demo", "Hello Android");
 
+                HelloRequest request = HelloRequest.newBuilder().setName("JayL").build();
+                greeterStub.sayHello(request, new StreamObserver<HelloReply>() {
+                    @Override
+                    public void onNext(HelloReply value) {
+                        Log.i("demo", value.getMessage());
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        Log.e("demo", t.getMessage());
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
 
             }
         });
