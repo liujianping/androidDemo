@@ -6,7 +6,7 @@ android {
     buildToolsVersion "29.0.0"
     defaultConfig {
         applicationId "com.gitdig.androiddemo"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -58,4 +58,6 @@ dependencies {
     implementation 'io.grpc:grpc-protobuf-lite:1.21.0'
     implementation 'io.grpc:grpc-okhttp:1.21.0'
     implementation 'io.grpc:grpc-stub:1.21.0'
+
+    implementation project(":golib")
 }

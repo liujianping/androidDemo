@@ -18,6 +18,7 @@ import android.view.MenuItem;
 
 import java.util.logging.Logger;
 
+import golib.Golib;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
@@ -45,16 +46,33 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
                 Log.i("demo", "Hello Android");
 
+                String goLib_hello = Golib.greetings("GoLib Hello");
+                Log.i("golib", goLib_hello);
+
+                try {
+                    long l = Golib.numberError(6);
+                    Log.i("golib", Long.toString(l));
+                    String directory = Golib.directory(".");
+                    Log.i("golib", directory);
+
+                    Golib.walkDirectory("/data/data/com.gitdig.androiddemo");
+
+                    Golib.sqliteCrud();
+                }
+                catch (Exception e) {
+                    Log.e("golib", e.getMessage());
+                }
+
                 HelloRequest request = HelloRequest.newBuilder().setName("JayL").build();
                 greeterStub.sayHello(request, new StreamObserver<HelloReply>() {
                     @Override
                     public void onNext(HelloReply value) {
-                        Log.i("demo", value.getMessage());
+                        Log.i("grpc", value.getMessage());
                     }
 
                     @Override
                     public void onError(Throwable t) {
-                        Log.e("demo", t.getMessage());
+                        Log.e("grpc", t.getMessage());
                     }
 
                     @Override
